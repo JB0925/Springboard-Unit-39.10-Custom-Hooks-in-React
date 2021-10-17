@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { v4 as uuid } from "uuid";
 import pokemon from "./pokemonList";
@@ -28,8 +28,23 @@ const useFlip = (defaulValue = true) => {
     return [value, flipCard];
 };
 
+const useLocalStorage = (key, defaultValue = JSON.stringify([])) => {
+    const [state, setState] = useState(() => {
+        let value = JSON.parse(window.localStorage.getItem(key) || defaultValue);
+        return value;
+    });
+
+    useEffect(() => {
+        window.localStorage.setItem(key, JSON.stringify(state));
+    }, [key, state]);
+
+    return [state, setState];
+};
+
 const useAxios = url => {
-    const [cards, setCards] = useState([]);
+    const key = url.indexOf("pokemon") === -1 ? 'playingCards' : 'pokemon';
+    const [cards, setCards] = useLocalStorage(key)
+    
     const addCard = async(name) => {
         url = pokemon.indexOf(name) !== -1 ? `${url}${name}/` : url;
         const response = await axios.get(url);

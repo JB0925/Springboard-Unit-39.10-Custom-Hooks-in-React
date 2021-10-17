@@ -34,7 +34,6 @@ const useAxios = url => {
         url = pokemon.indexOf(name) !== -1 ? `${url}${name}/` : url;
         const response = await axios.get(url);
         const newCard = pokemon.indexOf(name) === -1 ? formatPlayingCard(response.data) : formatPokeCard(response.data);
-        // setCards(cards => [...cards, { ...response.data, id: uuid() }]);
         setCards(cards => [...cards, newCard]);
     }
 
